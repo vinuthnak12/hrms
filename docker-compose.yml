@@ -1,0 +1,45 @@
+services:
+
+  postgres:
+    image: postgres:15
+    container_name: hrms-postgres
+    restart: unless-stopped
+
+    env_file:
+      - .env
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+    networks:
+      - hrms-network
+
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    container_name: hrms-app
+    restart: unless-stopped
+
+    depends_on:
+      - postgres
+
+    env_file:
+      - .env
+
+    ports:
+      - "${APP_PORT}:8080"
+
+    networks:
+      - hrms-network
+
+
+networks:
+  hrms-network:
+    driver: bridge
+
+
+volumes:
+  postgres_data:
