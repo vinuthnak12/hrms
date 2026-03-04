@@ -7,6 +7,7 @@ on:
 
 env:
   ECR_REPOSITORY: 089855661736.dkr.ecr.us-east-1.amazonaws.com/hrms-app
+  IMAGE_TAG: ${{ github.sha }}
 
 jobs:
   build:
@@ -41,7 +42,11 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v2
 
       - name: Tag Docker Image
-        run: docker tag hrms-app:latest $ECR_REPOSITORY:latest
+        run: |
+          docker tag hrms-app:latest $ECR_REPOSITORY:latest
+          docker tag hrms-app:latest $ECR_REPOSITORY:$IMAGE_TAG
 
       - name: Push Docker Image
-        run: docker push $ECR_REPOSITORY:latest
+        run: |
+          docker push $ECR_REPOSITORY:latest
+          docker push $ECR_REPOSITORY:$IMAGE_TAG
