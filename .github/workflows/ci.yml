@@ -5,6 +5,9 @@ on:
     branches:
       - main
 
+env:
+  ECR_REPOSITORY: 089855661736.dkr.ecr.us-east-1.amazonaws.com/hrms-app
+
 jobs:
   build:
 
@@ -18,8 +21,8 @@ jobs:
       - name: Set up Java
         uses: actions/setup-java@v4
         with:
-          distribution: 'temurin'
-          java-version: '17'
+          distribution: temurin
+          java-version: 17
 
       - name: Build with Maven
         run: mvn clean package -DskipTests
@@ -38,9 +41,7 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v2
 
       - name: Tag Docker Image
-        run: docker tag hrms-app:latest 089855661736.dkr.ecr.us-east-1.amazonaws.com/hrms-app:latest
-         
-      - name: Push Docker Image to ECR
-        run: docker push 089855661736.dkr.ecr.us-east-1.amazonaws.com/hrms-app:latest
-        
-       
+        run: docker tag hrms-app:latest $ECR_REPOSITORY:latest
+
+      - name: Push Docker Image
+        run: docker push $ECR_REPOSITORY:latest
