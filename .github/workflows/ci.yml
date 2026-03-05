@@ -51,5 +51,14 @@ jobs:
           docker push $ECR_REPOSITORY:latest
           docker push $ECR_REPOSITORY:$IMAGE_TAG
 
-      - name: Configure kubectl for EKS
-        run: aws eks update-kubeconfig --region us-east-1 --name java
+      - name: Update Kubernetes Manifest Image
+        run: |
+          sed -i "s|image:.*|image: $ECR_REPOSITORY:$IMAGE_TAG|g" k8s/app-deployment.yaml
+
+      - name: Commit and Push Manifest Update
+        run: |
+          git config --global user.email "vinuthnakoganti12@gmail.com"
+          git config --global user.name "vinuthnak12"
+          git add k8s/app-deployment.yaml
+          git commit -m "Update image to $IMAGE_TAG"
+          git push
