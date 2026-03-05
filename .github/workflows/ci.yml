@@ -50,3 +50,6 @@ jobs:
         run: |
           docker push $ECR_REPOSITORY:latest
           docker push $ECR_REPOSITORY:$IMAGE_TAG
+
+      - name: Configure kubectl for EKS
+        run: aws eks update-kubeconfig --region us-east-1 --name java
